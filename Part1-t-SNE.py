@@ -26,6 +26,8 @@ def main():
 
     # dataset = ImageFolder("./Colorectal Cancer/Dataset 1/Colorectal Cancer ", transform=transforms)
     dataset = ImageFolder("./Colorectal Cancer", transform=transforms)
+    # find the labels for each index
+    labels_per_index = [x[0] for x in sorted(dataset.class_to_idx.items(), key=lambda item: item[1])]
     # Load entire dataset as one w/o shuffling (to match back to labels)
     data_loader = DataLoader(dataset, shuffle=False, batch_size=64)
     print("Data loaded")
@@ -33,11 +35,18 @@ def main():
     features, labels = extract_features(resnet_encoder, data_loader, device)
     features = features.to("cpu")
     labels = labels.to("cpu")
+
     print("Features extracted")
 
     tsne = TSNE(n_components=2, perplexity=30.0)
     features_tsne = tsne.fit_transform(features)
-    plt.scatter(x=features_tsne[:, 0], y=features_tsne[:,1], c=labels)
+
+    fig, ax = plt.subplots()
+    scatter = ax.scatter(x=features_tsne[:, 0], y=features_tsne[:, 1], c=labels, alpha=0.35)
+    # produce a legend with the unique colors from the scatter
+    legend1 = ax.legend(*scatter.legend_elements(),
+                        loc="upper right", title="Classes")
+    ax.add_artist(legend1)
     plt.title("T-SNE Dimension Reduction on Entire Dataset")
     plt.show()
 
