@@ -9,6 +9,7 @@ from matplotlib import pyplot as plt
 from torch import Tensor
 from tqdm import tqdm
 
+
 def main():
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print(f"Device: {device}")
@@ -26,31 +27,42 @@ def main():
 
     # dataset = ImageFolder("./Colorectal Cancer/Dataset 1/Colorectal Cancer ", transform=transforms)
     dataset = ImageFolder("./Colorectal Cancer", transform=transforms)
-    # find the labels for each index
+    # Find labels for each index and make colours
     labels_per_index = [x[0] for x in sorted(dataset.class_to_idx.items(), key=lambda item: item[1])]
-    # Load entire dataset as one w/o shuffling (to match back to labels)
+    colors_per_index = {0: "#440354", 1: "#21918c", 2: "#fde726"}
+    # Load entire dataset
     data_loader = DataLoader(dataset, shuffle=False, batch_size=64)
     print("Data loaded")
 
+    # Extract features and put on CPU for t-sne
     features, labels = extract_features(resnet_encoder, data_loader, device)
     features = features.to("cpu")
     labels = labels.to("cpu")
-
     print("Features extracted")
 
+    # Use scikit-learn TSNE
     tsne = TSNE(n_components=2, perplexity=30.0)
     features_tsne = tsne.fit_transform(features)
 
     fig, ax = plt.subplots()
-    scatter = ax.scatter(x=features_tsne[:, 0], y=features_tsne[:, 1], c=labels, alpha=0.35)
+    # Plot 3 classes
+    for i in range(0,3):
+        this_class = features_tsne[labels==i]
+        ax.scatter(x=this_class[:, 0], y=this_class[:, 1], c=colors_per_index[i], 
+                    alpha=0.35, label=labels_per_index[i])
     # produce a legend with the unique colors from the scatter
-    legend1 = ax.legend(*scatter.legend_elements(),
-                        loc="upper right", title="Classes")
+    legend1 = ax.legend(loc="upper right", title="Classes")
     ax.add_artist(legend1)
     plt.title("T-SNE Dimension Reduction on Entire Dataset")
     plt.show()
 
-def extract_features(model, loader: DataLoader, device: str) -> tuple[Tensor, Tensor]:
+
+def extract_features(encoder, loader: DataLoader, device: str) -> tuple[Tensor, Tensor]:
+    """Take the feature encoder and pass the data through it.
+    Returns a tuple: (features, labels) where features is shape
+    (num_samples, num_features) and where labels is shape
+    (num_samples) """
+    
     features = []
     all_labels = []
     
@@ -59,11 +71,11 @@ def extract_features(model, loader: DataLoader, device: str) -> tuple[Tensor, Te
             images = images.to(device)
             labels = labels.to(device)
             # Forward pass through the ResNet model
-            features_batch = model(images)
-            # Flatten the features
+            features_batch = encoder(images)
+            # Flatten features and store
             features_batch = features_batch.view(features_batch.size(0), -1)
             features.append(features_batch)
-            # Store labels as well
+            # Store labels
             all_labels.append(labels)
     
     return torch.cat(features, dim=0), torch.cat(all_labels, dim=0)
