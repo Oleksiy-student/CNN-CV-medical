@@ -41,9 +41,11 @@ Python 3, PyTorch, torchvision, scikit-learn, Matplotlib
 
 # Task 2:
 Task2.ipnyb
+Task2_kMeans.ipynb
+Task2_kNN.ipynb
 
 ### Description:
-This machine learning program is designed to perform feature extraction and classification tasks using deep learning models. It utilizes PyTorch for model building and training, leveraging the ResNet34 architecture for feature extraction from Dataset 1. The program is capable of processing images, extracting features, and classifying them into different categories.
+This machine learning program is designed to perform feature extraction and classification tasks using deep learning models. It utilizes PyTorch for model building and training, leveraging the ResNet34 architecture for feature extraction from Dataset 1. The program is capable of processing images, extracting features, and classifying/clustering them into different categories.
 
 ### Features:
 Model Building: Use of ResNet34 for feature extraction.
@@ -51,12 +53,17 @@ Data Preprocessing: Implements custom transformations for data normalization and
 Feature Extraction: Extracts features from datasets using pre-trained and custom models.
 t-SNE Visualization: Performs t-Distributed Stochastic Neighbor Embedding (t-SNE) for high-dimensional data visualization.
 Classification with SVM: Utilizes Support Vector Machine (SVM) for the classification of extracted features.
+Classification with kNN: Utilizes K-Nearest Neighbors (kNN) for the classification of extracted features.
+Clustering with kMeans: Utilizes kMeans for the clustering of extracted features.
 
 ### Functions:
 extract_features: Extracts features and labels from the dataset.
 ImageNetModel: Creates a model pre-trained on ImageNet.
 find_perplexity: Finds and plots KL divergence for a range of perplexity values.
 perform_tsne: Performs t-SNE on extracted features and visualizes the results.
+classify/cluster: Separate the extracted features into classes/clusters
+classification report: Draws the report table of precision, recall, f1-score and support values
+confusion matrix: visualize the classification/clustering accuracy against labeled data
 
 ### Datasets:
 Dataset 1) Colorectal Cancer​
