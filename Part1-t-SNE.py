@@ -1,3 +1,10 @@
+### To use in colab, uncomment these lines. ###
+# !gdown 1pMV7-v2icU30mA6-DqEYlmnP65AXdVxA -O "Dataset 1.zip"
+# !unzip "Dataset 1.zip" -d "."
+# !mv "Dataset 1/Colorectal Cancer " "./Colorectal Cancer"
+# !gdown 1EtD0IW-mGIdNAyVX90UjLGKO-GfZSK6a -O "model.zip"
+# !unzip "model.zip" -d "."
+
 from torchvision.models import resnet34
 from torchvision.datasets import ImageFolder
 from torch.utils.data import DataLoader

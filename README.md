@@ -10,9 +10,17 @@ called MUS, NORM, etc.
 ### Description:
 This repository contains three Python scripts for a machine learning project focusing on colorectal cancer classification and data visualization using the ResNet34 model in PyTorch.
 Each python code serves a distinct role in the machine learning pipeline: training the model, testing and evaluating it, and applying t-SNE for data visualization.
+Note: To run these files within Google Colab, commands in a comment at the top must be uncommented to download the appropriate data.
 
 ### Dataset:
 Dataset 1) Colorectal Cancer​
+
+### Part1-Train-model.py (Model Training)
+Key Features:
+Model Configuration: Sets up ResNet34 with custom class numbers.
+Data Preparation: Loads and transforms the dataset.
+Training Loop: Includes forward pass, backpropagation, and optimization steps.
+Performance Monitoring: Tracks loss and accuracy on the validation set.
 
 ### Part1-Test-model.py (Model Evaluation)
 This script evaluates a trained ResNet34 model on a colorectal cancer dataset.
@@ -21,13 +29,6 @@ Model Loading: Loads a pre-trained ResNet34 model.
 Data Processing: Implements custom transformations for normalization.
 Evaluation Metrics: Calculates confusion matrix, accuracy, and other classification metrics.
 Visualization: Displays a confusion matrix for test data predictions.
-
-### Part1-Train-model.py (Model Training)
-Key Features:
-Model Configuration: Sets up ResNet34 with custom class numbers.
-Data Preparation: Loads and transforms the dataset.
-Training Loop: Includes forward pass, backpropagation, and optimization steps.
-Performance Monitoring: Tracks loss and accuracy on the validation set.
 
 ### Part1-t-SNE.py (Data Visualization)
 Key Features:

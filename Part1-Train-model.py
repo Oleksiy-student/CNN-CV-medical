@@ -1,10 +1,15 @@
+### Uncomment to use in Colab: ###
+# !gdown 1pMV7-v2icU30mA6-DqEYlmnP65AXdVxA -O "Dataset 1.zip"
+# !unzip "Dataset 1.zip" -d "."
+# !mv "Dataset 1/Colorectal Cancer " "./Colorectal Cancer"
+
 from torchvision.models import resnet34
 from torchvision.datasets import ImageFolder
 from torch.utils.data import DataLoader
 from torchvision.transforms import ToTensor, Normalize
 from torchvision.transforms import v2
 import torch
-import time
+
 
 def main():
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -16,7 +21,6 @@ def main():
     print(f"Device: {device}")
 
     torch.manual_seed(0)
-    # dataset = ImageFolder("/content/Colorectal Cancer/Dataset 1/Colorectal Cancer ", transform=transforms)
     dataset = ImageFolder("./Colorectal Cancer", transform=transforms)
     train_set, validation_set, test_set = torch.utils.data.random_split(dataset, [0.8, 0.1, 0.1])
     train_loader = DataLoader(train_set, shuffle=True, batch_size=64)

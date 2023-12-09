@@ -1,3 +1,10 @@
+### To run in colab, uncomment these lines: ###
+# !gdown 1pMV7-v2icU30mA6-DqEYlmnP65AXdVxA -O "Dataset 1.zip"
+# !unzip "Dataset 1.zip" -d "."
+# !mv "Dataset 1/Colorectal Cancer " "./Colorectal Cancer"
+# !gdown 1EtD0IW-mGIdNAyVX90UjLGKO-GfZSK6a -O "model.zip"
+# !unzip "model.zip" -d "."
+
 from torchvision.models import resnet34
 from torchvision.datasets import ImageFolder
 from torch.utils.data import DataLoader
@@ -19,7 +26,6 @@ def main():
 
     transforms = Compose([ToTensor(), Normalize(mean, std)])
 
-    # dataset = ImageFolder("/content/Colorectal Cancer/Dataset 1/Colorectal Cancer ", transform=transforms)
     dataset = ImageFolder("./Colorectal Cancer", transform=transforms)
     print(dataset.class_to_idx.items())
 
@@ -60,25 +66,27 @@ def evaluate(loader: DataLoader, device: str, model, loss) -> tuple[float, float
     labels_list = []
     predictions_list = []
 
-    # Load all batches, keep track of the ground truth labels and predictions
-    for features, labels in loader:
-        features = features.to(device)
-        labels = labels.to(device)
-        model_output = model(features)
-        class_predictions = model_output.max(1).indices
+    # Gradient computation not necessary
+    with torch.no_grad():
+      # Load all batches, keep track of the ground truth labels and predictions
+      for features, labels in loader:
+          features = features.to(device)
+          labels = labels.to(device)
+          model_output = model(features)
+          class_predictions = model_output.max(1).indices
 
-        labels_list.append(labels)
-        predictions_list.append(class_predictions)
+          labels_list.append(labels)
+          predictions_list.append(class_predictions)
 
-        average_loss += loss(model_output, labels).item()
-        average_accuracy += (labels == class_predictions).sum() / labels.size(0)
+          average_loss += loss(model_output, labels).item()
+          average_accuracy += (labels == class_predictions).sum() / labels.size(0)
 
     average_loss /= len(loader)
     average_accuracy /= len(loader)
     # Make confusion matrix
-    matrix = confusion_matrix(torch.cat(labels_list), torch.cat(predictions_list))
+    matrix = confusion_matrix(torch.cat(labels_list).cpu(), torch.cat(predictions_list).cpu())
     # Make classification report
-    report = classification_report(torch.cat(labels_list), torch.cat(predictions_list))
+    report = classification_report(torch.cat(labels_list).cpu(), torch.cat(predictions_list).cpu())
 
     return (average_loss, average_accuracy, matrix, report)
 
